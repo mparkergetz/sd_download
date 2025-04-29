@@ -13,6 +13,10 @@ TIMEOUT=30
 TIMER=0
 FOUND=0
 
+export DISPLAY=:0
+export XAUTHORITY=/home/$USERNAME/.Xauthority
+export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$USER_ID/bus"
+
 echo "$(date '+%Y-%m-%d %H:%M:%S') ===== Starting Backup =====" >> "$LOGFILE"
 
 while [ "$TIMER" -lt "$TIMEOUT" ]; do
@@ -32,10 +36,12 @@ done
 
 if [ "$FOUND" -ne 1 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') ERROR: No mounted bee_cam device found. Exiting." >> "$LOGFILE"
+    /usr/bin/notify-send "BeeCam Backup" "No bee_cam data found on $TARGET" --icon=dialog-information
     exit 1
 fi
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') Found bee_cam data at $TARGET" >> "$LOGFILE"
+/usr/bin/notify-send "BeeCam Backup" "Found bee_cam data at $TARGET" --icon=dialog-information
 mkdir -p "$TEMP_DIR"
 TAR_FILE="$TEMP_DIR/bee_cam_backup_$(basename "$TARGET")_$(date +%Y%m%d_%H%M%S).tar"
 echo "$(date '+%Y-%m-%d %H:%M:%S') Tarring data into $TAR_FILE" >> "$LOGFILE"
@@ -60,15 +66,9 @@ tar -tvf "$BACKUP_TAR" > /dev/null 2>> "$LOGFILE"
 
 if [ "$?" -eq 0 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') Verification SUCCESSFUL." >> "$LOGFILE"
-    export DISPLAY=:0
-    export XAUTHORITY=/home/$USERNAME/.Xauthority
-    export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$USER_ID/bus"
     /usr/bin/notify-send "BeeCam Backup" "Backup and verification successful!" --icon=dialog-information
 else
     echo "$(date '+%Y-%m-%d %H:%M:%S') WARNING: TAR verification FAILED!" >> "$LOGFILE"
-    export DISPLAY=:0
-    export XAUTHORITY=/home/$USERNAME/.Xauthority
-    export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$USER_ID/bus"
     /usr/bin/notify-send "BeeCam Backup" "WARNING: Backup verification FAILED!" --icon=dialog-warning
     exit 4
 fi
