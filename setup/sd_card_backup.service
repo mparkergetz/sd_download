@@ -1,0 +1,15 @@
+[Unit]
+Description=SD Card Backup Service
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/misha/repos/sd_download/sd_download.sh
+User=misha
+Group=misha
+Nice=10
+StandardOutput=append:/home/misha/repos/sd_download/logs/log.std
+StandardError=append:/home/misha/repos/sd_download/logs/log.err
+
+[Install]
+WantedBy=multi-user.target

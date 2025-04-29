@@ -1,0 +1,2 @@
+KERNEL=="sd*[0-9]", ACTION=="add", RUN+="/bin/systemctl start sd_card_backup.service"
+KERNEL=="mmcblk[0-9]p[0-9]", ACTION=="add", RUN+="/bin/systemctl start bee_cam_backup.service"
