@@ -6,6 +6,8 @@ UDEV_SRC="./99-bee-cam.rules"
 SERVICE_DEST="/etc/systemd/system/sd_card_backup.service"
 UDEV_DEST="/etc/udev/rules.d/99-bee-cam.rules"
 
+sudo apt install libnotify-bin
+
 sudo chmod +x "$SCRIPT_SRC"
 sudo cp "$UDEV_SRC" "$UDEV_DEST"
 
